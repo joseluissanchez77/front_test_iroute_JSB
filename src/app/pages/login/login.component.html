@@ -1,0 +1,58 @@
+<!-- This flex container takes the full height and vertically centers the content -->
+<div class="d-flex flex-column h-100 justify-content-center">
+    <div class="container">
+        <div class="row">
+            <!-- This is a single column that is responsive -->
+            <div class="col-12 col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header">Login</div>
+                    <div class="card-body">
+                        <!-- The formGroup 'form' is defined in the component class -->
+                        <form [formGroup]="formLogin">
+                            <div class="form-group">
+                                <label for="email">Usuario</label>
+                                <!-- The formControlName defines the name of the field in the formGroup -->
+                                <input id="email" formControlName="fcn_usuario" type="text" required
+                                    class="form-control" />
+
+                                <div *ngIf="fcn_usuario.invalid && ( fcn_usuario.dirty || fcn_usuario.touched )"
+                                    class="text-danger">
+                                    <div *ngIf="fcn_usuario.errors?.['required']">
+                                        Usuario es requerido.
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Contraseña</label>
+                                <input id="password" formControlName="fcn_contasena" type="password" required
+                                    class="form-control" />
+
+                                <div *ngIf="fcn_contasena.invalid && ( fcn_contasena.dirty || fcn_contasena.touched )"
+                                    class="text-danger">
+                                    <div *ngIf="fcn_contasena.errors?.['required']">
+                                        Contraseña es requerido.
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex justify-content-between">
+                            <!-- <a routerLink="/" class="ml-2 btn btn-outline-secondary">
+                                Home
+                            </a> -->
+                            <!-- The button has a click handler, it will be disabled if the form is not valid -->
+                            <!-- <button (click)="submit()" [disabled]="!form.valid" type="submit" -->
+                            <button (click)="submit()" type="submit" class="btn btn-outline-success">
+                                Ingresar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

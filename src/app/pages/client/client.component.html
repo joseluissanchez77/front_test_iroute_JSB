@@ -1,0 +1,228 @@
+<div class="container py-15">
+
+    <fieldset class="border p-2 mb-1 mt-2 filters">
+        <legend class="w-auto h6">Clientes</legend>
+
+
+        <div class="mt-5 d-grid gap-2 d-md-flex justify-content-md-end">
+
+            <div class="input-group input-group-sm">
+                <input type="text" class="form-control" placeholder="Buscar por cedula , nombre o apellido"
+                    [(ngModel)]="searchTerm">
+                <button type="button" class="btn btn-outline-secondary" (click)="btnSearchClient()">
+                    <i class="fa fa-search" aria-hidden="true">Buscar</i>
+                </button>
+            </div>
+
+            <button type="button" class="btn btn-block btn-danger " (click)="btnClearSearch()">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Limpiar
+            </button>
+
+            <button type="button" class="btn btn-block btn-info " (click)="btnAddClients()">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Agregar
+            </button>
+
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Cedula</th>
+                    <th scope="col">Nombres</th>
+                    <th scope="col">Apellidos</th>
+                    <th scope="col">Dirección</th>
+                    <th scope="col">Teléfono</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+            <tbody *ngIf="objGetClient.length > 0 else TablaVacia">
+
+                <tr *ngFor="let item of objGetClient;" (click)="dataClientRow(item)">
+
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.identification }}</td>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.apellido }}</td>
+                    <td>{{ item.direccion }}</td>
+                    <td>{{ item.telefono}}</td>
+                    <td>
+                        <button type="button" class="btn btn-success me-1" (click)="btnUpdateClient(item)"><i
+                                class="fas fa-edit"></i>Editar</button>
+                        <button type="button" class="btn btn-danger" (click)="deleteClientRowConfirm(item)"
+                            title="Eliminar Cliente"><i class="far fa-trash-alt"></i>Borrar</button>
+                    </td>
+                </tr>
+
+            </tbody>
+            <ng-template #TablaVacia>
+                <tbody>
+                    <tr class="body-empty">
+                        <td colspan="7">No hay datos para mostrar</td>
+                    </tr>
+                </tbody>
+            </ng-template>
+        </table>
+
+    </fieldset>
+</div>
+
+
+
+
+<div class="modal" tabindex="-1" role="dialog" [ngStyle]="{'display':displayStyle}">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Datos del cliente</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <form [formGroup]="clientViewForm">
+
+                            <div class="row">
+                                <div class="col-sm-12" hidden>
+                                    <label for="exampleInputId" class="form-label">Id</label>
+                                    <input formControlName="fcn_id" type="number" class="form-control"
+                                        id="exampleInputId" [ngModel]="clientForm.id" readonly="true">
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <label for="exampleInputIdentificacion" class="form-label">Cedula</label>
+                                    <input formControlName="fcn_identification" type="text" class="form-control"
+                                        id="exampleInputIdentificacion" [ngModel]="clientForm.identification">
+                                </div>
+
+                                <div *ngIf="fcn_identification.invalid && ( fcn_identification.dirty || fcn_identification.touched )"
+                                    class="text-danger">
+                                    <div *ngIf="fcn_identification.errors?.['longitudInvalida']">
+                                        La longitud máxima permitida es de {{ longitudMaximaCedula }} caracteres.
+                                    </div>
+                                    <div *ngIf="fcn_identification.errors?.['required']">
+                                        Cedula es requerido.
+                                    </div>
+
+                                    <div *ngIf="fcn_identification.errors?.['pattern']">
+                                        Solo se permiten numeros en este campo.
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <label for="exampleInputNombre" class="form-label">Nombre</label>
+                                    <input formControlName="fcn_nombre" type="text" class="form-control"
+                                        id="exampleInputNombre" [ngModel]="clientForm.nombre">
+                                </div>
+
+                                <div *ngIf="fcn_nombre.invalid && ( fcn_nombre.dirty || fcn_nombre.touched )"
+                                    class="text-danger">
+
+
+                                    <div *ngIf="fcn_nombre.errors?.['longitudInvalida']">
+                                        La longitud máxima permitida es de {{ longitudMaximaNombre }} caracteres.
+                                    </div>
+
+                                    <div *ngIf="fcn_nombre.errors?.['required']">
+                                        Nombre es requerido.
+                                    </div>
+
+                                    <div *ngIf="fcn_nombre.errors?.['pattern']">
+                                        Solo se permiten letras en este campo.
+                                    </div>
+
+
+                                </div>
+
+
+
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label for="exampleInputApellido" class="form-label">Apellido</label>
+                                    <input formControlName="fcn_apellido" type="text" class="form-control"
+                                        id="exampleInputApellido" [ngModel]="clientForm.apellido">
+                                </div>
+
+                                <div *ngIf="fcn_apellido.invalid && ( fcn_apellido.dirty || fcn_apellido.touched )"
+                                    class="text-danger">
+
+                                    <div *ngIf="fcn_apellido.errors?.['longitudInvalida']">
+                                        La longitud máxima permitida es de {{ longitudMaximaApellido }} caracteres.
+                                    </div>
+
+                                    <div *ngIf="fcn_apellido.errors?.['required']">
+                                        Apellido es requerido.
+                                    </div>
+
+                                    <div *ngIf="fcn_apellido.errors?.['pattern']">
+                                        Solo se permiten letras en este campo.
+                                    </div>
+
+                                </div>
+
+                                <div class="col-sm-12">
+                                    <label for="exampleInputDireccion" class="form-label">Direccion</label>
+                                    <input formControlName="fcn_direccion" type="text" class="form-control"
+                                        id="exampleInputDireccion" [ngModel]="clientForm.direccion">
+                                </div>
+
+                                <div *ngIf="fcn_direccion.invalid && ( fcn_direccion.dirty || fcn_direccion.touched )"
+                                    class="text-danger">
+                                    <div *ngIf="fcn_direccion.errors?.['required']">
+                                        Direccion es requerido.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <label for="exampleInputTelefono" class="form-label">Telefono</label>
+                                    <input formControlName="fcn_telefono" type="text" class="form-control"
+                                        id="exampleInputTelefono" [ngModel]="clientForm.telefono">
+                                </div>
+
+                                <div *ngIf="fcn_telefono.invalid && ( fcn_telefono.dirty || fcn_telefono.touched )"
+                                    class="text-danger">
+
+                                    <div *ngIf="fcn_telefono.errors?.['longitudInvalida']">
+                                        La longitud máxima permitida es de {{ longitudMaximaTelefono }} caracteres.
+                                    </div>
+
+                                    <div *ngIf="fcn_telefono.errors?.['required']">
+                                        Telefono es requerido.
+                                    </div>
+                                    
+                                    <div *ngIf="fcn_telefono.errors?.['numeroInvalido']">
+                                        El número debe comenzar con "09".
+                                    </div>
+
+                                    <div *ngIf="fcn_telefono.errors?.['pattern']">
+                                        Solo se permiten numeros en este campo.
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button (click)="accionEditarGuardar()" type="submit" class="btn btn-info">
+                    {{ ActionBtn }}
+                </button>
+                <button type="button" class="btn btn-danger" (click)="closePopup()">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
